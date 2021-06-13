@@ -44,6 +44,16 @@ public class SettingsDialog {
             }
         });
 
+        Button change_username = dialog.findViewById(R.id.change_usrename);
+
+        change_username.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UsernameChangeDialog alert = new UsernameChangeDialog();
+                alert.showDialog(activity, model);
+            }
+        });
+
         dialog.show();
 
     }
