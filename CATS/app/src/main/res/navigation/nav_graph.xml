@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/welcomeFragment">
+
+    <fragment
+        android:id="@+id/welcomeFragment"
+        android:name="com.example.cats.WelcomeFragment"
+        android:label="fragment_welcome"
+        tools:layout="@layout/fragment_welcome" >
+        <action
+            android:id="@+id/action_welcomeFragment_to_garageFragment"
+            app:destination="@id/garageFragment" />
+        <action
+            android:id="@+id/action_welcomeFragment_to_videoFragment"
+            app:destination="@id/videoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/garageFragment"
+        android:name="com.example.cats.GarageFragment"
+        android:label="fragment_garage"
+        tools:layout="@layout/fragment_garage" >
+        <action
+            android:id="@+id/action_garageFragment_to_modifyCarFragment"
+            app:destination="@id/modifyCarFragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit"
+            app:popEnterAnim="@anim/fragment_fade_enter"
+            app:popExitAnim="@anim/fragment_open_exit" />
+        <action
+            android:id="@+id/action_garageFragment_to_fightFragment"
+            app:destination="@id/fightFragment" />
+        <action
+            android:id="@+id/action_garageFragment_to_newPartFragment"
+            app:destination="@id/newPartFragment" />
+        <action
+            android:id="@+id/action_garageFragment_to_welcomeFragment"
+            app:destination="@id/welcomeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/modifyCarFragment"
+        android:name="com.example.cats.ModifyCarFragment"
+        android:label="fragment_modify_car"
+        tools:layout="@layout/fragment_modify_car" />
+    <fragment
+        android:id="@+id/fightFragment"
+        android:name="com.example.cats.FightFragment"
+        android:label="fragment_fight"
+        tools:layout="@layout/fragment_fight" >
+        <action
+            android:id="@+id/action_fightFragment_to_gameOverFragment"
+            app:destination="@id/gameOverFragment" />
+        <action
+            android:id="@+id/action_fightFragment_to_gameWonFragment"
+            app:destination="@id/gameWonFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/gameOverFragment"
+        android:name="com.example.cats.GameOverFragment"
+        android:label="fragment_game_over"
+        tools:layout="@layout/fragment_game_over" >
+        <action
+            android:id="@+id/action_gameOverFragment_to_garageFragment"
+            app:destination="@id/garageFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/gameWonFragment"
+        android:name="com.example.cats.GameWonFragment"
+        android:label="fragment_game_won"
+        tools:layout="@layout/fragment_game_won" >
+        <action
+            android:id="@+id/action_gameWonFragment_to_garageFragment"
+            app:destination="@id/garageFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/newPartFragment"
+        android:name="com.example.cats.NewPartFragment"
+        android:label="fragment_new_part"
+        tools:layout="@layout/fragment_new_part" >
+        <action
+            android:id="@+id/action_newPartFragment_to_garageFragment"
+            app:destination="@id/garageFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/videoFragment"
+        android:name="com.example.cats.VideoFragment"
+        android:label="fragment_video"
+        tools:layout="@layout/fragment_video" >
+        <action
+            android:id="@+id/action_videoFragment_to_garageFragment"
+            app:destination="@id/garageFragment" />
+    </fragment>
+</navigation>
