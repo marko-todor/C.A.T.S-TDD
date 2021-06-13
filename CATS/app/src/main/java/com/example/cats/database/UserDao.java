@@ -32,6 +32,9 @@ public abstract class UserDao {
     @Query("UPDATE user SET generated_new_box = :gen WHERE username LIKE :username")
     public abstract void updateGeneratedNewBox(String username, Boolean gen);
 
+    @Query("UPDATE user SET username = :newUsername WHERE username LIKE :oldUsername")
+    public abstract int updateUsername(String oldUsername, String newUsername);
+
     @Delete
     public abstract void deleteBox(Box box);
 

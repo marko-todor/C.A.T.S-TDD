@@ -171,6 +171,47 @@ public class TDD {
 
     }
 
+    @Test
+    public void check_delete_account_button() {
+        onView(withId(R.id.nickname)).perform(typeText("TestDeleteAccountButton"));
+        onView(withId(R.id.nickname)).perform(pressImeActionButton());
+        onView(withId(R.id.btn_dialog)).perform(click());
+        onView(withId(R.id.settings)).perform(click());
+        onView(withText("DELETE ACCOUNT")).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void check_delete_account_no() {
+        onView(withId(R.id.nickname)).perform(typeText("TestDeleteAccountNo"));
+        onView(withId(R.id.nickname)).perform(pressImeActionButton());
+        onView(withId(R.id.btn_dialog)).perform(click());
+        onView(withId(R.id.settings)).perform(click());
+        onView(withText("DELETE ACCOUNT")).perform(click());
+        onView(withText("Are you sure you want to delete this account?")).check(matches(isDisplayed()));
+        onView(withText("NO")).perform(click());
+        onView(withText("DELETE ACCOUNT")).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void check_delete_account_yes() {
+        onView(withId(R.id.nickname)).perform(typeText("TestDeleteAccountYes"));
+        onView(withId(R.id.nickname)).perform(pressImeActionButton());
+        onView(withId(R.id.btn_dialog)).perform(click());
+        onView(withId(R.id.settings)).perform(click());
+        onView(withText("DELETE ACCOUNT")).perform(click());
+        onView(withText("Are you sure you want to delete this account?")).check(matches(isDisplayed()));
+        onView(withText("YES")).perform(click());
+
+        try {
+            onView(withId(R.id.imagePlay)).perform(click());
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        onView(withText("TestDeleteAccountYes")).check(doesNotExist());
+    }
+
     @After
     public void tearDown() throws Exception {
 
