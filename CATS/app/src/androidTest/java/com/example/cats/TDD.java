@@ -103,7 +103,74 @@ public class TDD {
         onView(withText("New username:")).check(matches(isDisplayed()));
         onView(withText("Save")).check(matches(isDisplayed()));
     }
-    
+
+    @Test
+    public void check_username_change_error_username_exists() {
+        onView(withId(R.id.nickname)).perform(typeText("TestUserExists"));
+        onView(withId(R.id.nickname)).perform(pressImeActionButton());
+        onView(withId(R.id.btn_dialog)).perform(click());
+
+        onView(withId(R.id.logout)).perform(click());
+
+        try {
+            onView(withId(R.id.imagePlay)).perform(click());
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        onView(withId(R.id.nickname)).perform(typeText("TestUsernameError"));
+        onView(withId(R.id.nickname)).perform(pressImeActionButton());
+        onView(withId(R.id.btn_dialog)).perform(click());
+
+        onView(withId(R.id.settings)).perform(click());
+        onView(withText("Change Username")).perform(click());
+
+        onView(withId(R.id.new_username_edit)).perform(typeText("TestUserExists"));
+        onView(withId(R.id.new_username_edit)).perform(pressImeActionButton());
+        onView(withId(R.id.button_save_new_username)).perform(click());
+
+        onView(withText("Username TestUserExists is already taken")).check(matches(isDisplayed()));
+
+    }
+
+    @Test
+    public void check_username_change_success() {
+        onView(withId(R.id.nickname)).perform(typeText("TestUsernameChange"));
+        onView(withId(R.id.nickname)).perform(pressImeActionButton());
+        onView(withId(R.id.btn_dialog)).perform(click());
+        onView(withId(R.id.settings)).perform(click());
+        onView(withText("Change Username")).perform(click());
+
+        onView(withId(R.id.new_username_edit)).perform(typeText("TestUserChangeNew"));
+        onView(withId(R.id.new_username_edit)).perform(pressImeActionButton());
+        onView(withId(R.id.button_save_new_username)).perform(click());
+
+        onView(withId(R.id.btn_dialog)).perform(click());
+
+        onView(withId(R.id.stats)).perform(click());
+        onData(HasToString.hasToString(CoreMatchers.startsWith("TestUserChangeNew : 0")))
+                .inAdapterView(withId(R.id.list_view_high_scores)).atPosition(0)
+                .check(matches(isDisplayed()));
+
+        onView(withId(R.id.btn_dialog)).perform(click());
+
+        onView(withId(R.id.logout)).perform(click());
+
+        try {
+            onView(withId(R.id.imagePlay)).perform(click());
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        onData(HasToString.hasToString(CoreMatchers.startsWith("TestUserChangeNew")))
+                .inAdapterView(withId(R.id.list_view_users)).atPosition(0)
+                .check(matches(isDisplayed()));
+
+
+    }
+
     @After
     public void tearDown() throws Exception {
 
