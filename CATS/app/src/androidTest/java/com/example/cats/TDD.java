@@ -82,6 +82,27 @@ public class TDD {
                 .inAdapterView(withId(R.id.list_view_high_scores)).atPosition(0)
                 .check(matches(isDisplayed()));
     }
+
+    @Test
+    public void check_username_change_button() {
+        onView(withId(R.id.nickname)).perform(typeText("TestUsernameChangeButton"));
+        onView(withId(R.id.nickname)).perform(pressImeActionButton());
+        onView(withId(R.id.btn_dialog)).perform(click());
+        onView(withId(R.id.settings)).perform(click());
+        onView(withText("Change Username")).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void check_username_change_dialog() {
+        onView(withId(R.id.nickname)).perform(typeText("TestUserDialog"));
+        onView(withId(R.id.nickname)).perform(pressImeActionButton());
+        onView(withId(R.id.btn_dialog)).perform(click());
+        onView(withId(R.id.settings)).perform(click());
+        onView(withText("Change Username")).perform(click());
+        onView(withText("Old username:")).check(matches(isDisplayed()));
+        onView(withText("New username:")).check(matches(isDisplayed()));
+        onView(withText("Save")).check(matches(isDisplayed()));
+    }
     
     @After
     public void tearDown() throws Exception {
