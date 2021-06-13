@@ -54,7 +54,9 @@ public class TDD {
         onView(withId(R.id.btn_dialog)).perform(click());
         onView(withId(R.id.stats)).perform(click());
         onView(withText("High Score")).check(matches(isDisplayed()));
-        onView(withText("TestHighScoreExists : 0")).check(matches(isDisplayed()));
+        onData(HasToString.hasToString(CoreMatchers.startsWith("TestHighScoreExists : 0")))
+                .inAdapterView(withId(R.id.list_view_high_scores)).atPosition(0)
+                .check(matches(isDisplayed()));
     }
 
     @Test
@@ -63,8 +65,11 @@ public class TDD {
         onView(withId(R.id.nickname)).perform(pressImeActionButton());
         onView(withId(R.id.btn_dialog)).perform(click());
         onView(withId(R.id.stats)).perform(click());
-        onView(withText("TestHighScoreWorks : 0")).check(matches(isDisplayed()));
+        onData(HasToString.hasToString(CoreMatchers.startsWith("TestHighScoreWorks : 0")))
+                .inAdapterView(withId(R.id.list_view_high_scores)).atPosition(0)
+                .check(matches(isDisplayed()));
         onView(withId(R.id.btn_dialog)).perform(click());
+
         onView(withId(R.id.imageView_fight)).perform(click());
         try {
             Thread.sleep(17000);
@@ -72,7 +77,10 @@ public class TDD {
             e.printStackTrace();
         }
         onView(withId(R.id.button_go_to_garage)).perform(click());
-        onView(withText("TestHighScoreWorks : 1")).check(matches(isDisplayed()));
+        onView(withId(R.id.stats)).perform(click());
+        onData(HasToString.hasToString(CoreMatchers.startsWith("TestHighScoreWorks : 1")))
+                .inAdapterView(withId(R.id.list_view_high_scores)).atPosition(0)
+                .check(matches(isDisplayed()));
     }
     
     @After

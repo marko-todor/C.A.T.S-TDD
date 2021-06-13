@@ -22,7 +22,7 @@ public class GameWonFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_game_won, container, false);
-        back = view.findViewById(R.id.button_go_to_garageWon);
+        back = view.findViewById(R.id.button_go_to_garage);
         back.setBackgroundColor(Color.TRANSPARENT);
         new Thread(new Runnable() {
             @Override
