@@ -11,7 +11,7 @@ import android.widget.Switch;
 public class SettingsDialog {
 
 
-    public void showDialog(Activity activity, final MyViewModel model){
+    public void showDialog(Activity activity, final MyViewModel model, final GarageFragment garageFragment){
         final Dialog dialog = new Dialog(activity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(false);
@@ -51,6 +51,16 @@ public class SettingsDialog {
             public void onClick(View v) {
                 UsernameChangeDialog alert = new UsernameChangeDialog();
                 alert.showDialog(activity, model);
+            }
+        });
+
+        Button button_delete_account = dialog.findViewById(R.id.button_delete_account);
+
+        button_delete_account.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DeleteDialog alert = new DeleteDialog();
+                alert.showDialog(activity, model, garageFragment, dialog);
             }
         });
 

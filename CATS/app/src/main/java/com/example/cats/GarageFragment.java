@@ -375,7 +375,7 @@ public class GarageFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 SettingsDialog alert = new SettingsDialog();
-                alert.showDialog(getActivity(), model);
+                alert.showDialog(getActivity(), model, GarageFragment.this);
             }
         });
 
