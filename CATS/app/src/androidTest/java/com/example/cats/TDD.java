@@ -39,12 +39,8 @@ public class TDD {
 
     @Before
     public void setUp() throws Exception {
-        try {
-            onView(withId(R.id.imagePlay)).perform(click());
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        onView(withId(R.id.imagePlay)).perform(click());
+        onView(isRoot()).perform(waitFor(5000));
     }
 
     @Test
@@ -69,13 +65,11 @@ public class TDD {
                 .inAdapterView(withId(R.id.list_view_high_scores)).atPosition(0)
                 .check(matches(isDisplayed()));
         onView(withId(R.id.btn_dialog)).perform(click());
-
+        onView(isRoot()).perform(waitFor(1000));
         onView(withId(R.id.imageView_fight)).perform(click());
-        try {
-            Thread.sleep(17000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
+        onView(isRoot()).perform(waitFor(17000));
+
         onView(withId(R.id.button_go_to_garage)).perform(click());
         onView(withId(R.id.stats)).perform(click());
         onData(HasToString.hasToString(CoreMatchers.startsWith("TestHighScoreWorks : 1")))
@@ -112,12 +106,9 @@ public class TDD {
 
         onView(withId(R.id.logout)).perform(click());
 
-        try {
-            onView(withId(R.id.imagePlay)).perform(click());
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        onView(withId(R.id.imagePlay)).perform(click());
+
+        onView(isRoot()).perform(waitFor(5000));
 
         onView(withId(R.id.nickname)).perform(typeText("TestUsernameError"));
         onView(withId(R.id.nickname)).perform(pressImeActionButton());
@@ -157,17 +148,11 @@ public class TDD {
 
         onView(withId(R.id.logout)).perform(click());
 
-        try {
-            onView(withId(R.id.imagePlay)).perform(click());
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        onView(isRoot()).perform(waitFor(5000));
 
         onData(HasToString.hasToString(CoreMatchers.startsWith("TestUserChangeNew")))
                 .inAdapterView(withId(R.id.list_view_users)).atPosition(0)
                 .check(matches(isDisplayed()));
-
 
     }
 
@@ -202,19 +187,45 @@ public class TDD {
         onView(withText("Are you sure you want to delete this account?")).check(matches(isDisplayed()));
         onView(withText("YES")).perform(click());
 
-        try {
-            onView(withId(R.id.imagePlay)).perform(click());
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        onView(isRoot()).perform(waitFor(5000));
 
         onView(withText("TestDeleteAccountYes")).check(doesNotExist());
+    }
+
+    @Test
+    public void check_pause_icon_toggle(){
+        onView(withId(R.id.nickname)).perform(typeText("TestPauseButtonToggle"));
+        onView(withId(R.id.nickname)).perform(pressImeActionButton());
+        onView(withId(R.id.btn_dialog)).perform(click());
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withId(R.id.imageView_fight)).perform(click());
+        onView(withId(R.id.imageView_pause)).check(matches(EspressoTestsMatchers.withDrawable(R.drawable.pause)));
+        onView(withId(R.id.imageView_pause)).perform(click());
+        onView(withId(R.id.imageView_pause)).check(matches(EspressoTestsMatchers.withDrawable(R.drawable.play2)));
     }
 
     @After
     public void tearDown() throws Exception {
 
+    }
+
+    public static ViewAction waitFor(final long millis) {
+        return new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return isRoot();
+            }
+
+            @Override
+            public String getDescription() {
+                return "Wait for " + millis + " milliseconds.";
+            }
+
+            @Override
+            public void perform(UiController uiController, final View view) {
+                uiController.loopMainThreadForAtLeast(millis);
+            }
+        };
     }
 }
 
