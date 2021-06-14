@@ -312,6 +312,22 @@ public class FightFragment extends Fragment {
 
         model.goBack = false;
 
+        final ImageView pause = view.findViewById(R.id.imageView_pause);
+
+        pause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!paused) {
+                    pause.setImageResource(R.drawable.play2);
+                }
+                else {
+                    pause.setImageResource(R.drawable.pause);
+                }
+                paused = !paused;
+
+            }
+        });
+
         return view;
     }
 
