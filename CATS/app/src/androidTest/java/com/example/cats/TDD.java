@@ -204,6 +204,64 @@ public class TDD {
         onView(withId(R.id.imageView_pause)).check(matches(EspressoTestsMatchers.withDrawable(R.drawable.play2)));
     }
 
+    @Test
+    public void check_pause_stopping_time(){
+        onView(withId(R.id.nickname)).perform(typeText("TestPauseStoppingTime"));
+        onView(withId(R.id.nickname)).perform(pressImeActionButton());
+        onView(withId(R.id.btn_dialog)).perform(click());
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withId(R.id.imageView_fight)).perform(click());
+        onView(withId(R.id.imageView_pause)).perform(click());
+        String time1 = getText(withId(R.id.textView_timer));
+        onView(isRoot()).perform(waitFor(2000));
+        String time2 = getText(withId(R.id.textView_timer));
+        assertEquals(time1, time2);
+    }
+
+    @Test
+    public void check_pause_time_continue(){
+        onView(withId(R.id.nickname)).perform(typeText("TestPauseTimeContinue"));
+        onView(withId(R.id.nickname)).perform(pressImeActionButton());
+        onView(withId(R.id.btn_dialog)).perform(click());
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withId(R.id.imageView_fight)).perform(click());
+        onView(withId(R.id.imageView_pause)).perform(click());
+        String time1 = getText(withId(R.id.textView_timer));
+        onView(isRoot()).perform(waitFor(2000));
+        onView(withId(R.id.imageView_pause)).perform(click());
+        onView(isRoot()).perform(waitFor(2000));
+        String time2 = getText(withId(R.id.textView_timer));
+        assertNotEquals(time1, time2);
+    }
+
+    @Test
+    public void check_pause_fight_stops(){
+        onView(withId(R.id.nickname)).perform(typeText("TestPauseTimeContinue"));
+        onView(withId(R.id.nickname)).perform(pressImeActionButton());
+        onView(withId(R.id.btn_dialog)).perform(click());
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withId(R.id.imageView_fight)).perform(click());
+        onView(isRoot()).perform(waitFor(2000));
+        onView(withId(R.id.imageView_pause)).perform(click());
+        onView(isRoot()).perform(waitFor(15000));
+        onView(withId(R.id.textView_timer)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void check_pause_fight_continues(){
+        onView(withId(R.id.nickname)).perform(typeText("TestPauseTimeContinue"));
+        onView(withId(R.id.nickname)).perform(pressImeActionButton());
+        onView(withId(R.id.btn_dialog)).perform(click());
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withId(R.id.imageView_fight)).perform(click());
+        onView(isRoot()).perform(waitFor(2000));
+        onView(withId(R.id.imageView_pause)).perform(click());
+        onView(isRoot()).perform(waitFor(2000));
+        onView(withId(R.id.imageView_pause)).perform(click());
+        onView(isRoot()).perform(waitFor(15000));
+        onView(withId(R.id.button_go_to_garage)).check(matches(isDisplayed()));
+    }
+
     @After
     public void tearDown() throws Exception {
 
@@ -226,6 +284,28 @@ public class TDD {
                 uiController.loopMainThreadForAtLeast(millis);
             }
         };
+    }
+    
+    String getText(final Matcher<View> matcher) {
+        final String[] stringHolder = { null };
+        onView(matcher).perform(new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return isAssignableFrom(TextView.class);
+            }
+
+            @Override
+            public String getDescription() {
+                return "getting text from a TextView";
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                TextView tv = (TextView)view; //Save, because of check in getConstraints()
+                stringHolder[0] = tv.getText().toString();
+            }
+        });
+        return stringHolder[0];
     }
 }
 
