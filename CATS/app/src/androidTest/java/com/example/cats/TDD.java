@@ -1,12 +1,16 @@
 package com.example.cats;
 
+import androidx.test.espresso.UiController;
+import androidx.test.espresso.ViewAction;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 
+import org.hamcrest.CoreMatchers;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.hamcrest.object.HasToString;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -15,16 +19,40 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 
+import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.pressImeActionButton;
 import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
+import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+
+
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+
 import static org.hamcrest.core.AnyOf.anyOf;
+
+//for special meatcher
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import org.hamcrest.Description;
+import org.hamcrest.TypeSafeMatcher;
 
 
 @RunWith(AndroidJUnit4.class)
@@ -276,6 +304,49 @@ public class TDD {
                 .getDecorView()))).check(matches(isDisplayed()));
         onView(withId(R.id.saveAndExit)).check(matches(not(isDisplayed())));
     }
+
+    @Test
+    public void check_save_checkpoint_restart_button_not_present(){
+        onView(withId(R.id.nickname)).perform(typeText("TestCheckpointRestartButton1"));
+        onView(withId(R.id.nickname)).perform(pressImeActionButton());
+        onView(withId(R.id.btn_dialog)).perform(click());
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withId(R.id.restart)).check(matches(not(isDisplayed())));
+    }
+
+    @Test
+    public void check_save_checkpoint_restart_button_present(){
+        onView(withId(R.id.nickname)).perform(typeText("TestCheckpointRestartButton2"));
+        onView(withId(R.id.nickname)).perform(pressImeActionButton());
+        onView(withId(R.id.btn_dialog)).perform(click());
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withId(R.id.imageView_fight)).perform(click());
+        onView(isRoot()).perform(waitFor(2000));
+        onView(withId(R.id.saveAndExit)).perform(click());
+        onView(isRoot()).perform(waitFor(15000));
+        onView(withId(R.id.button_go_to_garage)).perform(click());
+        onView(withId(R.id.restart)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void check_save_checkpoint_time(){
+        onView(withId(R.id.nickname)).perform(typeText("TestSaveCheckpointTime"));
+        onView(withId(R.id.nickname)).perform(pressImeActionButton());
+        onView(withId(R.id.btn_dialog)).perform(click());
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withId(R.id.imageView_fight)).perform(click());
+        onView(isRoot()).perform(waitFor(2000));
+        onView(withId(R.id.saveAndExit)).perform(click());
+        String time1 = getText(withId(R.id.textView_timer));
+        onView(isRoot()).perform(waitFor(15000));
+        onView(withId(R.id.button_go_to_garage)).perform(click());
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withId(R.id.restart)).perform(click());
+        String time2 = getText(withId(R.id.textView_timer));
+        assertEquals(time1, time2);
+    }
+
+
 
     @After
     public void tearDown() throws Exception {
