@@ -31,6 +31,21 @@ class CarPart {
 
     }
 
+
+    public static CarPart copyCarPart(CarPart part){
+        Integer x = part.getX();
+        Integer y = part.getY();
+        Integer width = part.getWidth();
+        Integer height = part.getHeight();
+        Integer partResourceId = part.getPartResourceId();
+        Integer partInfoResourceId = part.getPartInfoResourceId();
+        Integer health = part.getHealth();
+        Integer energy = part.getEnergy();
+        Integer power = part.getPower();
+        return new CarPart(x, y, width, height, partResourceId, partInfoResourceId,
+                health, energy, power);
+    };
+
     public CarPart() {
 
     }

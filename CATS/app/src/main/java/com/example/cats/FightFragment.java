@@ -1,5 +1,9 @@
 package com.example.cats;
 
+
+import android.content.Context;
+import android.widget.Toast;
+import java.util.Stack;
 import android.graphics.Rect;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
@@ -41,6 +45,8 @@ public class FightFragment extends Fragment {
     private boolean opponentHasCannon = false;
     public ExplosionField explosionField;
     private ImageView saveAndExit;
+    private boolean paused = false;
+    private LastSave lastSave;
 
     public MyViewModel getModel() {
         return model;
@@ -50,6 +56,9 @@ public class FightFragment extends Fragment {
         return timerThread;
     }
 
+    public void disableSave() {
+        saveAndExit.setVisibility(View.INVISIBLE);
+    }
 
     @Nullable
     @Override
@@ -132,6 +141,19 @@ public class FightFragment extends Fragment {
     }
 
     public void setMyCar() {
+
+        Car carSave = null;
+        if(lastSave != null) carSave = lastSave.restoreLastMe();
+        //if progress was saved
+        if(carSave != null) {
+            customView.setMyCar(carSave);
+            myCar = carSave;
+            if(myCar.getSlotOne().getPartImageId() != null && myCar.getSlotOne().getPartImageId().equals(R.drawable.cannon)){
+                carHasCannon = true;
+            }
+            return;
+        }
+
         Car oldCar = model.getMyCar().getValue();
         myCar = new Car(300, 650, oldCar.getCarResourceId(),null
                 ,350,oldCar.getEnergy(),0,480,480); //OVDE PROMENI
@@ -208,6 +230,19 @@ public class FightFragment extends Fragment {
     }
 
     public void setOpponentCar() {
+
+        Car carSave = null;
+        if(lastSave != null) carSave = lastSave.restoreLastOpponent();
+        //if progress was saved
+        if(carSave != null) {
+            customView.setOpponentCar(carSave);
+            opponent = carSave;
+            if(opponent.getSlotOne().getPartImageId() != null && opponent.getSlotOne().getPartImageId().equals(R.drawable.cannon_mirror)){
+                opponentHasCannon = true;
+            }
+            return;
+        }
+
         List<Car> opponents = model.getOpponentCars().getValue();
         Random rand = new Random();
 
@@ -289,6 +324,10 @@ public class FightFragment extends Fragment {
 
 
         model = new ViewModelProvider(getActivity()).get(MyViewModel.class);
+
+        lastSave = model.getLastSave().getValue();
+        if(lastSave == null) lastSave = new LastSave();
+
         customView = view.findViewById(R.id.customView);
         customView.setFightFragment(this);
 
@@ -306,6 +345,10 @@ public class FightFragment extends Fragment {
 
 
         timerThread = new TimerThread(timer,watchOut,this);
+
+        Integer timeLeft = lastSave.getTime();
+        if(timeLeft != null) timerThread.setTimeRemaining(timeLeft);
+
         new Thread(movingPartsThread).start();
         new Thread(timerThread).start();
 
@@ -349,11 +392,15 @@ public class FightFragment extends Fragment {
         saveAndExit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                lastSave.saveMe(myCar);
+                lastSave.saveOpponent(opponent);
+                lastSave.saveTime(Integer.parseInt(timer.getText().toString()));
                 Context context = getActivity().getApplicationContext();
                 CharSequence text = "Checkpoint saved!";
                 int duration = Toast.LENGTH_SHORT;
                 Toast toast = Toast.makeText(context, text, duration);
                 toast.show();
+                model.setLastSave(lastSave);
                 saveAndExit.post(new Runnable() {
                     @Override
                     public void run() {
@@ -401,11 +448,16 @@ public class FightFragment extends Fragment {
         public boolean carClearToShot, opponentClearToShot;
         public boolean paused = false;
 
+        public void setTimeRemaining(Integer time) {
+            timeRemaining = time;
+        }
+
         public TimerThread(TextView timer, TextView watchOut, FightFragment fightFragment) {
             this.timer = timer;
             this.watchOut = watchOut;
             this.fightFragment = fightFragment;
         }
+
 
 
 
@@ -459,6 +511,64 @@ public class FightFragment extends Fragment {
 
         }
 
+    }
+
+}
+
+class LastSave {
+
+    public Stack<Car> carStatesMe = new Stack<>();
+    public Stack<Car> carStatesOpponent = new Stack<>();
+    public Stack<Integer> timeLeft = new Stack<>();
+
+    private static LastSave lastSave = null;
+
+    public static LastSave getInstance()
+    {
+        if (lastSave == null)
+            lastSave = new LastSave();
+
+        return lastSave;
+    }
+
+    public void saveMe(Car car) {
+        carStatesMe.add(new Car(car));
+    }
+
+    public Car restoreLastMe() {
+        if(!carStatesMe.empty()) {
+            return carStatesMe.pop();
+        } else return null;
+    }
+
+    public void saveOpponent(Car car) {
+        carStatesOpponent.add(new Car(car));
+    }
+
+    public Car restoreLastOpponent() {
+        if(!carStatesOpponent.empty()) {
+            return carStatesOpponent.pop();
+        } else return null;
+    }
+
+    public void saveTime(Integer time) {
+        timeLeft.add(time);
+    }
+
+    public Integer getTime() {
+        if(!timeLeft.empty()) {
+            return timeLeft.pop();
+        } else return null;
+    }
+
+    public void reset() {
+        carStatesMe = new Stack<>();
+        carStatesOpponent = new Stack<>();
+        timeLeft = new Stack<>();
+    }
+
+    public boolean hasHistory() {
+        return !carStatesMe.empty();
     }
 
 }

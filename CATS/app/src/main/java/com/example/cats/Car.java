@@ -35,6 +35,27 @@ public class Car {
         this.height = height;
     }
 
+    public Car(Car car) {
+        List<CarPart> carPartsCopy = new ArrayList<>();
+        for (CarPart part: car.carParts) {
+            carPartsCopy.add(CarPart.copyCarPart(part));
+        }
+        this.x = car.x;
+        this.y = car.y;
+        this.carResourceId = car.carResourceId;
+        this.carParts = carPartsCopy;
+        this.health = car.health;
+        this.energy = car.energy;
+        this.power = car.power;
+        this.width = car.width;
+        this.height = car.height;
+
+        this.slotOne = new Slot();
+
+        this.slotOne = new Slot(car.slotOne);
+        this.slotTwo = new Slot(car.slotTwo);
+    }
+
     public Slot getSlotOne() {
         return slotOne;
     }

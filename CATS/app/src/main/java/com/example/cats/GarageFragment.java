@@ -45,6 +45,7 @@ public class GarageFragment extends Fragment {
     private SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm aa");
     private Boolean loadingBoxes = new Boolean(true);
     private Activity mActivity;
+    private LastSave lastSave;
 
     public GarageFragment() {
 
@@ -54,61 +55,63 @@ public class GarageFragment extends Fragment {
 
     public void loadUserBoxes(final String username) {
         synchronized (loadingBoxes) {
-        User user = ((MainActivity)mActivity).db.userDao().findByName(username);
-        List<Box> boxesDB = ((MainActivity) mActivity).db.userDao().getBoxList(user.uid);
-            for (final Box box : boxesDB) {
-                if (convertDate(box.timeToOpen) > 0) {
-                    slotTimes.set(box.slotNumber, convertDate(box.timeToOpen));
-                    slotsAvailable.set(box.slotNumber, false);
+            User user = ((MainActivity) mActivity).db.userDao().findByName(username);
+            if(user != null) {
+                List<Box> boxesDB = ((MainActivity) mActivity).db.userDao().getBoxList(user.uid);
+                for (final Box box : boxesDB) {
+                    if (convertDate(box.timeToOpen) > 0) {
+                        slotTimes.set(box.slotNumber, convertDate(box.timeToOpen));
+                        slotsAvailable.set(box.slotNumber, false);
 
-                    time_tags.get(box.slotNumber).post(new Runnable() {
-                        @Override
-                        public void run() {
-                            time_tags.get(box.slotNumber).setVisibility(View.VISIBLE);
-                        }
-                    });
+                        time_tags.get(box.slotNumber).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                time_tags.get(box.slotNumber).setVisibility(View.VISIBLE);
+                            }
+                        });
 
-                    slotTimesTV.get(box.slotNumber).post(new Runnable() {
-                        @Override
-                        public void run() {
-                            slotTimesTV.get(box.slotNumber).setVisibility(View.VISIBLE);
-                            slotTimesTV.get(box.slotNumber).setText(Integer.toString(convertDate(box.timeToOpen)));
-                        }
-                    });
-                    boxes.get(box.slotNumber).setImageResource(R.drawable.box);
-                } else {
-                    boxesImages.get(box.slotNumber).post(new Runnable() {
-                        @Override
-                        public void run() {
-                            boxesImages.get(box.slotNumber).setEnabled(true);
-                        }
-                    });
+                        slotTimesTV.get(box.slotNumber).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                slotTimesTV.get(box.slotNumber).setVisibility(View.VISIBLE);
+                                slotTimesTV.get(box.slotNumber).setText(Integer.toString(convertDate(box.timeToOpen)));
+                            }
+                        });
+                        boxes.get(box.slotNumber).setImageResource(R.drawable.box);
+                    } else {
+                        boxesImages.get(box.slotNumber).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                boxesImages.get(box.slotNumber).setEnabled(true);
+                            }
+                        });
 
-                    slotTimes.set(box.slotNumber, 0);
-                    slotsAvailable.set(box.slotNumber, false);
+                        slotTimes.set(box.slotNumber, 0);
+                        slotsAvailable.set(box.slotNumber, false);
 
-                    time_tags.get(box.slotNumber).post(new Runnable() {
-                        @Override
-                        public void run() {
-                            time_tags.get(box.slotNumber).setVisibility(View.INVISIBLE);
-                        }
-                    });
+                        time_tags.get(box.slotNumber).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                time_tags.get(box.slotNumber).setVisibility(View.INVISIBLE);
+                            }
+                        });
 
-                    slotTimesTV.get(box.slotNumber).post(new Runnable() {
-                        @Override
-                        public void run() {
-                            slotTimesTV.get(box.slotNumber).setVisibility(View.INVISIBLE);
-                        }
-                    });
-                    boxesImages.get(box.slotNumber).post(new Runnable() {
-                        @Override
-                        public void run() {
-                            boxesImages.get(box.slotNumber).setImageResource(R.drawable.box);
-                        }
-                    });
+                        slotTimesTV.get(box.slotNumber).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                slotTimesTV.get(box.slotNumber).setVisibility(View.INVISIBLE);
+                            }
+                        });
+                        boxesImages.get(box.slotNumber).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                boxesImages.get(box.slotNumber).setImageResource(R.drawable.box);
+                            }
+                        });
+                    }
                 }
-            }
         }
+    }
 
     }
 
@@ -322,6 +325,40 @@ public class GarageFragment extends Fragment {
 
         model = new ViewModelProvider(getActivity()).get(MyViewModel.class);
 
+        lastSave = model.getLastSave().getValue();
+
+        ImageView restart = view.findViewById(R.id.restart);
+
+        if(lastSave == null || !lastSave.hasHistory()) restart.setVisibility(View.INVISIBLE);
+
+        restart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.buttonMediaPlayer.start();
+                Random random = new Random();
+                int song = random.nextInt(3);
+                MainActivity mainActivity = (MainActivity) getActivity();
+                switch (song) {
+                    case 1: {
+                        mainActivity.startNewSong(R.raw.fight1);
+                        break;
+                    }
+                    case 2: {
+                        mainActivity.startNewSong(R.raw.fight2);
+                        break;
+                    }
+                    case 3: {
+                        mainActivity.startNewSong(R.raw.fight3);
+                        break;
+                    }
+                }
+
+
+                NavController navController = NavHostFragment.findNavController(GarageFragment.this);
+                navController.navigate(R.id.action_garageFragment_to_fightFragment);
+            }
+        });
+
         refreshCar();
 
         startFight = view.findViewById(R.id.imageView_fight);
@@ -329,6 +366,7 @@ public class GarageFragment extends Fragment {
         startFight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (lastSave != null) lastSave.reset();
                 MainActivity.buttonMediaPlayer.start();
                 Random random = new Random();
                 int song = random.nextInt(3);
