@@ -40,6 +40,7 @@ public class FightFragment extends Fragment {
     private boolean carHasCannon = false;
     private boolean opponentHasCannon = false;
     public ExplosionField explosionField;
+    private ImageView saveAndExit;
 
     public MyViewModel getModel() {
         return model;
@@ -337,6 +338,26 @@ public class FightFragment extends Fragment {
                             }
                         }
                         paused = !paused;
+                    }
+                });
+            }
+        });
+
+
+        saveAndExit = view.findViewById(R.id.saveAndExit);
+
+        saveAndExit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = getActivity().getApplicationContext();
+                CharSequence text = "Checkpoint saved!";
+                int duration = Toast.LENGTH_SHORT;
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+                saveAndExit.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        saveAndExit.setVisibility(View.INVISIBLE);
                     }
                 });
             }
