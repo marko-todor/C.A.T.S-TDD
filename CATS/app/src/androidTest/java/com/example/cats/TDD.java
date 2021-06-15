@@ -262,6 +262,21 @@ public class TDD {
         onView(withId(R.id.button_go_to_garage)).check(matches(isDisplayed()));
     }
 
+    @Test
+    public void check_save_checkpoint_button_dissapearing_and_toast(){
+        onView(withId(R.id.nickname)).perform(typeText("TestCheckpointButtonAndToast"));
+        onView(withId(R.id.nickname)).perform(pressImeActionButton());
+        onView(withId(R.id.btn_dialog)).perform(click());
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withId(R.id.imageView_fight)).perform(click());
+        onView(isRoot()).perform(waitFor(2000));
+        onView(withId(R.id.saveAndExit)).check(matches(isDisplayed()));
+        onView(withId(R.id.saveAndExit)).perform(click());
+        onView(withText("Checkpoint saved!")).inRoot(withDecorView(not(mActivityRule.getActivity().getWindow()
+                .getDecorView()))).check(matches(isDisplayed()));
+        onView(withId(R.id.saveAndExit)).check(matches(not(isDisplayed())));
+    }
+
     @After
     public void tearDown() throws Exception {
 
@@ -285,7 +300,7 @@ public class TDD {
             }
         };
     }
-    
+
     String getText(final Matcher<View> matcher) {
         final String[] stringHolder = { null };
         onView(matcher).perform(new ViewAction() {
