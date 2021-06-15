@@ -17,7 +17,7 @@ public class MovingPartsThread implements Runnable {
 
     private boolean dealingDamage = false;
     private Random random;
-
+    public boolean paused = false;
 
     public MovingPartsThread(MyViewModel model, CustomView customView, FightFragment fightFragment) {
         this.model = model;
@@ -273,7 +273,15 @@ public class MovingPartsThread implements Runnable {
         Canvas canvas = null;
         while(true) {
             if(checkGameOver()) break;
-
+            if(paused) {
+                try {
+                    synchronized (this) {
+                        wait();
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
             if(!isHitBounds()) {
                 if (!clash) {
                     setCarPositions();

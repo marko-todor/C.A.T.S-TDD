@@ -317,14 +317,28 @@ public class FightFragment extends Fragment {
         pause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!paused) {
-                    pause.setImageResource(R.drawable.play2);
-                }
-                else {
-                    pause.setImageResource(R.drawable.pause);
-                }
-                paused = !paused;
-
+                pause.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(!paused) {
+                            pause.setImageResource(R.drawable.play2);
+                            movingPartsThread.paused = true;
+                            timerThread.paused = true;
+                        }
+                        else {
+                            pause.setImageResource(R.drawable.pause);
+                            synchronized (movingPartsThread) {
+                                movingPartsThread.notify();
+                                movingPartsThread.paused = false;
+                            }
+                            synchronized (timerThread) {
+                                timerThread.notify();
+                                timerThread.paused = false;
+                            }
+                        }
+                        paused = !paused;
+                    }
+                });
             }
         });
 
@@ -364,6 +378,8 @@ public class FightFragment extends Fragment {
         private Integer timeRemaining = 7;
         private FightFragment fightFragment;
         public boolean carClearToShot, opponentClearToShot;
+        public boolean paused = false;
+
         public TimerThread(TextView timer, TextView watchOut, FightFragment fightFragment) {
             this.timer = timer;
             this.watchOut = watchOut;
@@ -375,6 +391,15 @@ public class FightFragment extends Fragment {
         @Override
         public void run() {
             while(true) {
+                if(paused) {
+                    try {
+                        synchronized (this) {
+                            wait();
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
                 if(timeRemaining % 2 == 0) {
                     carClearToShot = true;
                     opponentClearToShot = true;
