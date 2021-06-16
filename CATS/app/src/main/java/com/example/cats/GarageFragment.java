@@ -46,6 +46,10 @@ public class GarageFragment extends Fragment {
     private Boolean loadingBoxes = new Boolean(true);
     private Activity mActivity;
     private LastSave lastSave;
+    private List<ImageView> avatarExtraPictures = new ArrayList<>();
+    private TextView chooseCharacter;
+    private List<ImageView> avatars = new ArrayList<>();
+    private boolean choosingCharacter = false;
 
     public GarageFragment() {
 
@@ -438,7 +442,62 @@ public class GarageFragment extends Fragment {
             }
         });
 
+        avatarExtraPictures.add((ImageView) view.findViewById(R.id.imageView_grayout));
+        avatarExtraPictures.add((ImageView) view.findViewById(R.id.imageView_cloud1));
+        avatarExtraPictures.add((ImageView) view.findViewById(R.id.imageView_cloud2));
+        avatarExtraPictures.add((ImageView) view.findViewById(R.id.imageView_cloud3));
+        avatarExtraPictures.add((ImageView) view.findViewById(R.id.imageView_cloud4));
+        avatars.add((ImageView) view.findViewById(R.id.cat_my_gif1));
+        avatars.add((ImageView) view.findViewById(R.id.cat_my_gif2));
+        avatars.add((ImageView) view.findViewById(R.id.cat_my_gif3));
+        avatars.add((ImageView) view.findViewById(R.id.cat_my_gif4));
+        for(ImageView avatar : avatars) {
+            avatar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    changeVisibilityAvatars(View.INVISIBLE);
+                    choosingCharacter = false;
+                }
+            });
+        }
+        chooseCharacter = view.findViewById(R.id.textView_choose_character);
+        ImageView change_avatar = view.findViewById(R.id.imageView_change_avatar);
+        change_avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                choosingCharacter = true;
+                if(choosingCharacter) {
+                    changeVisibilityAvatars(View.VISIBLE);
+                }
+            }
+        });
+
         return view;
+    }
+
+    public void changeVisibilityAvatars(final int visibility) {
+        for (final ImageView extra : avatarExtraPictures) {
+            extra.post(new Runnable() {
+                @Override
+                public void run() {
+                    extra.setVisibility(visibility);
+                }
+            });
+        }
+        for (final ImageView avatars : avatars) {
+            avatars.post(new Runnable() {
+                @Override
+                public void run() {
+                    avatars.setVisibility(visibility);
+                }
+            });
+        }
+        chooseCharacter.post(new Runnable() {
+            @Override
+            public void run() {
+                chooseCharacter.setVisibility(visibility);
+            }
+        });
     }
 
     public int convertDate(String date) {
