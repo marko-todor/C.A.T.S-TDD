@@ -346,6 +346,17 @@ public class TDD {
         assertEquals(time1, time2);
     }
 
+    @Test
+    public void check_save_checkpoint_icon_disappear() {
+        onView(withId(R.id.nickname)).perform(typeText("TestSaveIconDisappear"));
+        onView(withId(R.id.nickname)).perform(pressImeActionButton());
+        onView(withId(R.id.btn_dialog)).perform(click());
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withId(R.id.imageView_fight)).perform(click());
+        onView(isRoot()).perform(waitFor(9000));
+        onView(withId(R.id.saveAndExit)).check(matches(not(isDisplayed())));
+    }
+
 
 
     @After
