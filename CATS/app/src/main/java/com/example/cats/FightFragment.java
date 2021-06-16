@@ -343,8 +343,9 @@ public class FightFragment extends Fragment {
 
         movingPartsThread = new MovingPartsThread(model, customView, this);
 
+        saveAndExit = view.findViewById(R.id.saveAndExit);
 
-        timerThread = new TimerThread(timer,watchOut,this);
+        timerThread = new TimerThread(timer,watchOut,this, saveAndExit);
 
         Integer timeLeft = lastSave.getTime();
         if(timeLeft != null) timerThread.setTimeRemaining(timeLeft);
@@ -386,8 +387,6 @@ public class FightFragment extends Fragment {
             }
         });
 
-
-        saveAndExit = view.findViewById(R.id.saveAndExit);
 
         saveAndExit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -447,15 +446,17 @@ public class FightFragment extends Fragment {
         private FightFragment fightFragment;
         public boolean carClearToShot, opponentClearToShot;
         public boolean paused = false;
+        public ImageView save;
 
         public void setTimeRemaining(Integer time) {
             timeRemaining = time;
         }
 
-        public TimerThread(TextView timer, TextView watchOut, FightFragment fightFragment) {
+        public TimerThread(TextView timer, TextView watchOut, FightFragment fightFragment, ImageView save) {
             this.timer = timer;
             this.watchOut = watchOut;
             this.fightFragment = fightFragment;
+            this.save = save;
         }
 
 
@@ -497,6 +498,12 @@ public class FightFragment extends Fragment {
                         @Override
                         public void run() {
                             watchOut.setVisibility(View.VISIBLE);
+                        }
+                    });
+                    save.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            save.setVisibility(View.VISIBLE);
                         }
                     });
                 }
