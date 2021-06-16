@@ -357,6 +357,89 @@ public class TDD {
         onView(withId(R.id.saveAndExit)).check(matches(not(isDisplayed())));
     }
 
+    @Test
+    public void check_change_avatar_button() {
+        onView(withId(R.id.nickname)).perform(typeText("TestChangeAvatarButton"));
+        onView(withId(R.id.nickname)).perform(pressImeActionButton());
+        onView(withId(R.id.btn_dialog)).perform(click());
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withId(R.id.imageView_change_avatar)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void check_change_avatar_avatars_not_present_until_clicked() {
+        onView(withId(R.id.nickname)).perform(typeText("TestChangeAvatarNoAvatars"));
+        onView(withId(R.id.nickname)).perform(pressImeActionButton());
+        onView(withId(R.id.btn_dialog)).perform(click());
+        onView(isRoot()).perform(waitFor(1000));
+        checkAvatarsDisappear();
+    }
+
+    public void checkAvatarsDisappear() {
+        onView(withId(R.id.cat_my_gif1)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.cat_my_gif2)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.cat_my_gif3)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.cat_my_gif4)).check(matches(not(isDisplayed())));
+    }
+
+    @Test
+    public void check_change_avatar_avatars_present_when_clicked() {
+        onView(withId(R.id.nickname)).perform(typeText("TestChangeAvatarYesAvatars"));
+        onView(withId(R.id.nickname)).perform(pressImeActionButton());
+        onView(withId(R.id.btn_dialog)).perform(click());
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withId(R.id.imageView_change_avatar)).perform(click());
+        onView(isRoot()).perform(waitFor(100));
+        onView(withId(R.id.cat_my_gif1)).check(matches(isDisplayed()));
+        onView(withId(R.id.cat_my_gif2)).check(matches(isDisplayed()));
+        onView(withId(R.id.cat_my_gif3)).check(matches(isDisplayed()));
+        onView(withId(R.id.cat_my_gif4)).check(matches(isDisplayed()));
+    }
+
+
+    @Test
+    public void check_change_avatar_avatars_disappear_when_clicked() {
+        onView(withId(R.id.nickname)).perform(typeText("TestChangeAvatarAvatarsDisappear"));
+        onView(withId(R.id.nickname)).perform(pressImeActionButton());
+        onView(withId(R.id.btn_dialog)).perform(click());
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withId(R.id.imageView_change_avatar)).perform(click());
+        onView(isRoot()).perform(waitFor(100));
+        onView(withId(R.id.cat_my_gif1)).perform(click());
+        onView(isRoot()).perform(waitFor(100));
+        checkAvatarsDisappear();
+
+        onView(withId(R.id.imageView_change_avatar)).perform(click());
+        onView(isRoot()).perform(waitFor(100));
+        onView(withId(R.id.cat_my_gif2)).perform(click());
+        onView(isRoot()).perform(waitFor(100));
+        checkAvatarsDisappear();
+
+        onView(withId(R.id.imageView_change_avatar)).perform(click());
+        onView(isRoot()).perform(waitFor(100));
+        onView(withId(R.id.cat_my_gif3)).perform(click());
+        onView(isRoot()).perform(waitFor(100));
+        checkAvatarsDisappear();
+
+        onView(withId(R.id.imageView_change_avatar)).perform(click());
+        onView(isRoot()).perform(waitFor(100));
+        onView(withId(R.id.cat_my_gif4)).perform(click());
+        onView(isRoot()).perform(waitFor(100));
+        checkAvatarsDisappear();
+
+    }
+
+    @Test
+    public void check_change_avatar_avatars_message() {
+        onView(withId(R.id.nickname)).perform(typeText("TestChangeAvatarAvatarsMessage"));
+        onView(withId(R.id.nickname)).perform(pressImeActionButton());
+        onView(withId(R.id.btn_dialog)).perform(click());
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withId(R.id.imageView_change_avatar)).perform(click());
+        onView(isRoot()).perform(waitFor(100));
+        onView(withText("Choose your character")).check(matches(isDisplayed()));
+    }
+
 
 
     @After
