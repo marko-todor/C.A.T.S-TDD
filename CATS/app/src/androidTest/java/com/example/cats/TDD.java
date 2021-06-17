@@ -520,6 +520,33 @@ public class TDD {
     }
 
 
+    @Test
+    public void check_change_avatar_db() {
+        onView(withId(R.id.nickname)).perform(typeText("TestChangeAvatarDatabase"));
+        onView(withId(R.id.nickname)).perform(pressImeActionButton());
+        onView(withId(R.id.btn_dialog)).perform(click());
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withId(R.id.imageView_change_avatar)).perform(click());
+        onView(withId(R.id.cat_my_gif2)).perform(click());
+        onView(isRoot()).perform(waitFor(1000));
+
+        onView(withId(R.id.logout)).perform(click());
+        onView(isRoot()).perform(waitFor(100));
+        onView(withId(R.id.imagePlay)).perform(click());
+        onView(isRoot()).perform(waitFor(5000));
+
+        onView(withId(R.id.nickname)).perform(typeText("TestChangeAvatarDatabase"));
+        onView(withId(R.id.nickname)).perform(pressImeActionButton());
+        onView(withId(R.id.btn_dialog)).perform(click());
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withId(R.id.imageView_change_avatar)).perform(click());
+        onView(withId(R.id.cat_my_gif2)).perform(click());
+        onView(isRoot()).perform(waitFor(100));
+        onView(withText("Already chosen!")).inRoot(withDecorView(not(mActivityRule.getActivity().getWindow()
+                .getDecorView()))).check(matches(isDisplayed()));
+    }
+
+
     @After
     public void tearDown() throws Exception {
 
