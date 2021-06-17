@@ -441,6 +441,84 @@ public class TDD {
     }
 
 
+    @Test
+    public void check_change_avatar_displayed_toast() {
+        onView(withId(R.id.nickname)).perform(typeText("TestChangeAvatarAvatarsToast"));
+        onView(withId(R.id.nickname)).perform(pressImeActionButton());
+        onView(withId(R.id.btn_dialog)).perform(click());
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withId(R.id.imageView_change_avatar)).perform(click());
+        onView(withId(R.id.cat_my_gif1)).perform(click());
+        onView(isRoot()).perform(waitFor(100));
+        onView(withText("Already chosen!")).inRoot(withDecorView(not(mActivityRule.getActivity().getWindow()
+                .getDecorView()))).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void check_change_avatar_garage() {
+        onView(withId(R.id.nickname)).perform(typeText("TestChangeAvatarGarage"));
+        onView(withId(R.id.nickname)).perform(pressImeActionButton());
+        onView(withId(R.id.btn_dialog)).perform(click());
+        onView(isRoot()).perform(waitFor(1000));
+
+
+        onView(withId(R.id.imageView_change_avatar)).perform(click());
+        onView(isRoot()).perform(waitFor(100));
+
+        onView(withId(R.id.cat_my_gif1)).perform(click());
+        onView(isRoot()).perform(waitFor(100));
+        onView(withText("Already chosen!")).inRoot(withDecorView(not(mActivityRule.getActivity().getWindow()
+                .getDecorView()))).check(matches(isDisplayed()));
+
+        onView(withId(R.id.imageView_change_avatar)).perform(click());
+        onView(isRoot()).perform(waitFor(100));
+
+        onView(withId(R.id.cat_my_gif2)).perform(click());
+        onView(isRoot()).perform(waitFor(100));
+
+        onView(withId(R.id.imageView_change_avatar)).perform(click());
+        onView(isRoot()).perform(waitFor(100));
+
+        onView(withId(R.id.cat_my_gif2)).perform(click());
+        onView(isRoot()).perform(waitFor(100));
+
+        onView(withText("Already chosen!")).inRoot(withDecorView(not(mActivityRule.getActivity().getWindow()
+                .getDecorView()))).check(matches(isDisplayed()));
+
+        onView(withId(R.id.imageView_change_avatar)).perform(click());
+        onView(isRoot()).perform(waitFor(100));
+
+        onView(withId(R.id.cat_my_gif3)).perform(click());
+        onView(isRoot()).perform(waitFor(100));
+
+        onView(withId(R.id.imageView_change_avatar)).perform(click());
+        onView(isRoot()).perform(waitFor(100));
+
+        onView(withId(R.id.cat_my_gif3)).perform(click());
+        onView(isRoot()).perform(waitFor(100));
+
+        onView(withText("Already chosen!")).inRoot(withDecorView(not(mActivityRule.getActivity().getWindow()
+                .getDecorView()))).check(matches(isDisplayed()));
+
+
+        onView(withId(R.id.imageView_change_avatar)).perform(click());
+        onView(isRoot()).perform(waitFor(100));
+
+        onView(withId(R.id.cat_my_gif4)).perform(click());
+        onView(isRoot()).perform(waitFor(100));
+
+        onView(withId(R.id.imageView_change_avatar)).perform(click());
+        onView(isRoot()).perform(waitFor(100));
+
+        onView(withId(R.id.cat_my_gif4)).perform(click());
+        onView(isRoot()).perform(waitFor(100));
+
+        onView(withText("Already chosen!")).inRoot(withDecorView(not(mActivityRule.getActivity().getWindow()
+                .getDecorView()))).check(matches(isDisplayed()));
+
+
+    }
+
 
     @After
     public void tearDown() throws Exception {
