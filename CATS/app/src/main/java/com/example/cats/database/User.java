@@ -24,6 +24,9 @@ public class User {
     @ColumnInfo(name = "generated_new_box")
     public Boolean newBox;
 
+    @ColumnInfo(name = "avatar")
+    public int avatar;
+
     @ColumnInfo(name = "body_upgraded")
     public Boolean bodyUpgraded;
 

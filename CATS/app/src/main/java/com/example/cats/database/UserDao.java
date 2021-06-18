@@ -35,6 +35,9 @@ public abstract class UserDao {
     @Query("UPDATE user SET username = :newUsername WHERE username LIKE :oldUsername")
     public abstract int updateUsername(String oldUsername, String newUsername);
 
+    @Query("UPDATE user SET avatar = :avatar WHERE username LIKE :username")
+    public abstract void updateAvatar(String username, int avatar);
+
     @Delete
     public abstract void deleteBox(Box box);
 

@@ -329,6 +329,35 @@ public class GarageFragment extends Fragment {
 
         model = new ViewModelProvider(getActivity()).get(MyViewModel.class);
 
+        car_avatar = view.findViewById(R.id.cat_my_gif);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                String username = sharedPref.getString("username", "");
+                User user = ((MainActivity) getActivity()).db.userDao().findByName(username);
+                if(user != null)
+                    switch (user.avatar) {
+                        case 1: {
+                            car_avatar.setImageResource(R.drawable.cat_player1);
+                            break;
+                        }
+                        case 2: {
+                            car_avatar.setImageResource(R.drawable.cat_player2);
+                            break;
+                        }
+                        case 3: {
+                            car_avatar.setImageResource(R.drawable.cat_player3);
+                            break;
+                        }
+                        case 4: {
+                            car_avatar.setImageResource(R.drawable.cat_player4);
+                            break;
+                        }
+                    }
+            }
+        }).start();
+
         lastSave = model.getLastSave().getValue();
 
         ImageView restart = view.findViewById(R.id.restart);
@@ -455,8 +484,68 @@ public class GarageFragment extends Fragment {
             avatar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    final int pictureTag = (int) v.getTag();
                     changeVisibilityAvatars(View.INVISIBLE);
                     choosingCharacter = false;
+                    final Activity activity = getActivity();
+                    //car_avatar.post(new Runnable() {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                            String username = sharedPref.getString("username", "");
+                            final User user = ((MainActivity) getActivity()).db.userDao().findByName(username);
+                            int pictureId = 0;
+                            if(user.avatar == pictureTag) {
+                                activity.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Context context = getActivity().getApplicationContext();
+                                        CharSequence text = "Already chosen!";
+                                        int duration = Toast.LENGTH_SHORT;
+                                        Toast toast = Toast.makeText(context, text, duration);
+                                        toast.show();
+                                    }
+                                });
+                            } else {
+                                switch (pictureTag) {
+                                    case 1: {
+                                        pictureId = R.drawable.cat_player1;
+                                        break;
+                                    }
+                                    case 2: {
+                                        pictureId = R.drawable.cat_player2;
+                                        break;
+                                    }
+                                    case 3: {
+                                        pictureId = R.drawable.cat_player3;
+                                        break;
+                                    }
+                                    case 4: {
+                                        pictureId = R.drawable.cat_player4;
+                                        break;
+                                    }
+                                }
+                                car_avatar.setImageResource(pictureId);
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        ((MainActivity) getActivity()).db.userDao().updateAvatar(model.loggedIn, pictureTag);
+                                    }
+                                }).start();
+                                activity.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Context context = getActivity().getApplicationContext();
+                                        CharSequence text = "Successfully changed character!";
+                                        int duration = Toast.LENGTH_SHORT;
+                                        Toast toast = Toast.makeText(context, text, duration);
+                                        toast.show();
+                                    }
+                                });
+                            }
+                        }
+                    }).start();
                 }
             });
         }
@@ -468,6 +557,7 @@ public class GarageFragment extends Fragment {
                 choosingCharacter = true;
                 if(choosingCharacter) {
                     changeVisibilityAvatars(View.VISIBLE);
+
                 }
             }
         });

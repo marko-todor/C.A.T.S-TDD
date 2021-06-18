@@ -21,6 +21,7 @@ public class MyViewModel extends ViewModel {
     private MutableLiveData<List<Car>> opponentCars;
     private MutableLiveData<Boolean> musicOn, playerModeOn;
     private MutableLiveData<List<String>> users;
+    private MutableLiveData<LastSave> lastSave;
     public String loggedIn;
     private ImageView slot1, slot2;
     public boolean goBack = false;
@@ -41,6 +42,8 @@ public class MyViewModel extends ViewModel {
         this.users.setValue(new ArrayList<String>());
         this.musicOn.setValue(true);
         this.playerModeOn.setValue(false);
+        this.lastSave = new MutableLiveData<LastSave>();
+
     }
 
     public void setDatabase(final AppDatabase database) {
@@ -60,6 +63,13 @@ public class MyViewModel extends ViewModel {
 
     }
 
+
+    public void setLastSave(LastSave lastSave) {
+        this.lastSave.postValue(lastSave);
+    }
+    public LiveData<LastSave> getLastSave() {
+        return lastSave;
+    }
 
     public MutableLiveData<List<String>> getUsersLiveData() {
         return this.users;
@@ -252,6 +262,7 @@ public class MyViewModel extends ViewModel {
         u.gamesLost = 0;
         u.gamesWon = 0;
         u.newBox = false;
+        u.avatar = 1;
 
         database.userDao().insertUserWithParts(u, parts);
 
