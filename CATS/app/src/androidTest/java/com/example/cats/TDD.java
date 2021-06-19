@@ -415,17 +415,6 @@ public class TDD {
         onView(isRoot()).perform(waitFor(100));
         checkAvatarsDisappear();
 
-        onView(withId(R.id.imageView_change_avatar)).perform(click());
-        onView(isRoot()).perform(waitFor(100));
-        onView(withId(R.id.cat_my_gif3)).perform(click());
-        onView(isRoot()).perform(waitFor(100));
-        checkAvatarsDisappear();
-
-        onView(withId(R.id.imageView_change_avatar)).perform(click());
-        onView(isRoot()).perform(waitFor(100));
-        onView(withId(R.id.cat_my_gif4)).perform(click());
-        onView(isRoot()).perform(waitFor(100));
-        checkAvatarsDisappear();
 
     }
 
@@ -487,36 +476,7 @@ public class TDD {
 
         onView(withId(R.id.imageView_change_avatar)).perform(click());
         onView(isRoot()).perform(waitFor(100));
-
-        onView(withId(R.id.cat_my_gif3)).perform(click());
-        onView(isRoot()).perform(waitFor(100));
-
-        onView(withId(R.id.imageView_change_avatar)).perform(click());
-        onView(isRoot()).perform(waitFor(100));
-
-        onView(withId(R.id.cat_my_gif3)).perform(click());
-        onView(isRoot()).perform(waitFor(100));
-
-        onView(withText("Already chosen!")).inRoot(withDecorView(not(mActivityRule.getActivity().getWindow()
-                .getDecorView()))).check(matches(isDisplayed()));
-
-
-        onView(withId(R.id.imageView_change_avatar)).perform(click());
-        onView(isRoot()).perform(waitFor(100));
-
-        onView(withId(R.id.cat_my_gif4)).perform(click());
-        onView(isRoot()).perform(waitFor(100));
-
-        onView(withId(R.id.imageView_change_avatar)).perform(click());
-        onView(isRoot()).perform(waitFor(100));
-
-        onView(withId(R.id.cat_my_gif4)).perform(click());
-        onView(isRoot()).perform(waitFor(100));
-
-        onView(withText("Already chosen!")).inRoot(withDecorView(not(mActivityRule.getActivity().getWindow()
-                .getDecorView()))).check(matches(isDisplayed()));
-
-
+        
     }
 
 
@@ -544,6 +504,62 @@ public class TDD {
         onView(isRoot()).perform(waitFor(100));
         onView(withText("Already chosen!")).inRoot(withDecorView(not(mActivityRule.getActivity().getWindow()
                 .getDecorView()))).check(matches(isDisplayed()));
+    }
+
+
+    @Test
+    public void check_change_avatar_locked_avatars() {
+        onView(withId(R.id.nickname)).perform(typeText("TestChangeAvatarLockedAvatars"));
+        onView(withId(R.id.nickname)).perform(pressImeActionButton());
+        onView(withId(R.id.btn_dialog)).perform(click());
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withId(R.id.imageView_change_avatar)).perform(click());
+        onView(isRoot()).perform(waitFor(100));
+        onView(withId(R.id.imageView_padlock3)).check(matches(EspressoTestsMatchers.withDrawable(R.drawable.padlock)));
+        onView(withId(R.id.imageView_padlock4)).check(matches(EspressoTestsMatchers.withDrawable(R.drawable.padlock)));
+    }
+
+    @Test
+    public void check_change_avatar_unlocked_avatars() {
+
+        onView(withId(R.id.nickname)).perform(typeText("TestChangeAvatarUnlockedAvatars"));
+        onView(withId(R.id.nickname)).perform(pressImeActionButton());
+        onView(withId(R.id.btn_dialog)).perform(click());
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withId(R.id.imageView_fight)).perform(click());
+        onView(isRoot()).perform(waitFor(17000));
+        onView(withId(R.id.button_go_to_garage)).perform(click());
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withId(R.id.imageView_change_avatar)).perform(click());
+        onView(isRoot()).perform(waitFor(100));
+        onView(withId(R.id.imageView_padlock3)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.imageView_padlock4)).check(matches(EspressoTestsMatchers.withDrawable(R.drawable.padlock)));
+        onView(withId(R.id.cat_my_gif3)).perform(click());
+        onView(isRoot()).perform(waitFor(100));
+        onView(withId(R.id.imageView_fight)).perform(click());
+        onView(isRoot()).perform(waitFor(17000));
+        onView(withId(R.id.button_go_to_garage)).perform(click());
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withId(R.id.imageView_change_avatar)).perform(click());
+        onView(isRoot()).perform(waitFor(100));
+        onView(withId(R.id.imageView_padlock3)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.imageView_padlock3)).check(matches(not(isDisplayed())));
+    }
+
+    @Test
+    public void check_change_avatar_disabled_buttons() {
+        onView(withId(R.id.nickname)).perform(typeText("TestChangeAvatarDisabledGarage"));
+        onView(withId(R.id.nickname)).perform(pressImeActionButton());
+        onView(withId(R.id.btn_dialog)).perform(click());
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withId(R.id.imageView_change_avatar)).perform(click());
+        onView(isRoot()).perform(waitFor(100));
+        onView(withId(R.id.stats)).perform(click());
+        onView(withId(R.id.imageMyCar)).perform(click());
+        onView(withId(R.id.logout)).perform(click());
+        onView(withId(R.id.settings)).perform(click());
+        onView(withId(R.id.imageView_fight)).perform(click());
+        onView(withId(R.id.cat_my_gif1)).check(matches(isDisplayed()));
     }
 
 
