@@ -36,6 +36,7 @@ public class CustomView extends View {
     private List<Bitmap> resizedHealthMy = new ArrayList<>();
     private List<Bitmap> resizedHealthOpponent = new ArrayList<>();
     private Bitmap resizedCarMy;
+    private Bitmap resizedAvatarMy;
     private Bitmap resizedCarOpponent;
     private Matrix positionPartMe = new Matrix();
     private Matrix positionPartOpponent = new Matrix();
@@ -108,6 +109,31 @@ public class CustomView extends View {
         Bitmap bmpCar = BitmapFactory.decodeResource(getResources(), myCar.getCarResourceId());
         resizedCarMy = Bitmap.createScaledBitmap(bmpCar, myCar.getWidth()
                 , myCar.getHeight(), false);
+
+        int avatar = myCar.getAvatar();
+        int avatarResourceId = R.drawable.cat_player1_static;
+        switch (avatar) {
+            case 1: {
+                avatarResourceId = R.drawable.cat_player1_static;
+                break;
+            }
+            case 2: {
+                avatarResourceId = R.drawable.cat_player2_static;
+                break;
+            }
+            case 3: {
+                avatarResourceId = R.drawable.cat_player3_static;
+                break;
+            }
+            case 4: {
+                avatarResourceId = R.drawable.cat_player4_static;
+                break;
+            }
+        }
+        Bitmap bmpMyAvatar = BitmapFactory.decodeResource(getResources(), avatarResourceId);
+        resizedAvatarMy = Bitmap.createScaledBitmap(bmpMyAvatar, 180
+                , 180, false);
+
 
         bmpCar = BitmapFactory.decodeResource(getResources(), opponentCar.getCarResourceId());
         resizedCarOpponent = Bitmap.createScaledBitmap(bmpCar, opponentCar.getWidth()
@@ -402,6 +428,8 @@ public class CustomView extends View {
             Paint paint = new Paint();
             paint.setAlpha(240);
             canvas.drawBitmap(resizedCarMy, myCar.getX(), myCar.getY(), paint);
+
+            canvas.drawBitmap(resizedAvatarMy, myCar.getX() + 130, myCar.getY() + 60, paint);
 
             canvas.drawBitmap(resizedCarOpponent, opponentCar.getX(), opponentCar.getY(), paint);
 

@@ -47,6 +47,7 @@ public class FightFragment extends Fragment {
     private ImageView saveAndExit;
     private boolean paused = false;
     private LastSave lastSave;
+    private ImageView myAvatar;
 
     public MyViewModel getModel() {
         return model;
@@ -121,6 +122,7 @@ public class FightFragment extends Fragment {
         car.getSlotOne().getSlot().right += move;
         car.getSlotTwo().getSlot().left += move;
         car.getSlotTwo().getSlot().right += move;
+        car.getAvatarCoordinates().x += move;
     }
 
     public void moveCarParts() {
@@ -156,12 +158,20 @@ public class FightFragment extends Fragment {
 
         Car oldCar = model.getMyCar().getValue();
         myCar = new Car(300, 650, oldCar.getCarResourceId(),null
-                ,350,oldCar.getEnergy(),0,480,480); //OVDE PROMENI
+                ,350,oldCar.getEnergy(),0,480,480);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                User user = ((MainActivity) getActivity()).db.userDao().findByName(model.loggedIn);
+                myCar.setAvatar(user.avatar);
+            }
+        }).start();
 
         if(model.bodyPart != null) {
-            myCar.setCarResourceId(R.drawable.car_with_body_cc);
+            myCar.setCarResourceId(R.drawable.car_with_body);
         } else {
-            myCar.setCarResourceId(R.drawable.car1cc);
+            myCar.setCarResourceId(R.drawable.car1);
         }
 
         Slot slotUpMy = new Slot();
@@ -503,7 +513,7 @@ public class FightFragment extends Fragment {
                     save.post(new Runnable() {
                         @Override
                         public void run() {
-                            save.setVisibility(View.VISIBLE);
+                            save.setVisibility(View.INVISIBLE);
                         }
                     });
                 }

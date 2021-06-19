@@ -14,6 +14,8 @@ public class Car {
     private Integer health, energy, power;
     private Slot slotOne = new Slot();
     private Slot slotTwo = new Slot();
+    private Point avatar_coordinates;
+    private int avatar;
 
     public Car(int x, int y, int carResourceId, List<CarPart> carParts, Integer health, Integer energy, Integer power, Integer width, Integer height) {
         this.x = x;
@@ -33,6 +35,7 @@ public class Car {
                 y + height/2 + 30));
         this.width = width;
         this.height = height;
+        this.avatar_coordinates = new Point(x + 50, y);
     }
 
     public Car(Car car) {
@@ -54,6 +57,20 @@ public class Car {
 
         this.slotOne = new Slot(car.slotOne);
         this.slotTwo = new Slot(car.slotTwo);
+        this.avatar = car.avatar;
+        this.avatar_coordinates = new Point(car.getAvatarCoordinates());
+
+    }
+    public int getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(int avatar) {
+        this.avatar = avatar;
+    }
+
+    public Point getAvatarCoordinates() {
+        return  avatar_coordinates;
     }
 
     public Slot getSlotOne() {
