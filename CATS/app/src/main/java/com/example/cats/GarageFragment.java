@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
+import android.opengl.Visibility;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -30,6 +30,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+public ImageView car_avatar;
+private ImageView padlock1;
+private ImageView padlock2;
+private ImageView restart;
+private ImageView settings;
+private ImageView exit;
+private ImageView modify;
+private ImageView stats;
 
 public class GarageFragment extends Fragment {
 
@@ -318,7 +326,9 @@ public class GarageFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_garage, container, false);
-        view.findViewById(R.id.imageMyCar).setOnClickListener(new View.OnClickListener() {
+
+        modify = view.findViewById(R.id.imageMyCar);
+        modify.findViewById(R.id.imageMyCar).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 NavController navController = NavHostFragment.findNavController(GarageFragment.this);
@@ -360,7 +370,7 @@ public class GarageFragment extends Fragment {
 
         lastSave = model.getLastSave().getValue();
 
-        ImageView restart = view.findViewById(R.id.restart);
+         restart = view.findViewById(R.id.restart);
 
         if(lastSave == null || !lastSave.hasHistory()) restart.setVisibility(View.INVISIBLE);
 
@@ -441,7 +451,7 @@ public class GarageFragment extends Fragment {
             }
         }).start();
 
-        ImageView settings = view.findViewById(R.id.settings);
+        settings = view.findViewById(R.id.settings);
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -452,7 +462,7 @@ public class GarageFragment extends Fragment {
 
 
 
-        ImageView exit = view.findViewById(R.id.logout);
+        exit = view.findViewById(R.id.logout);
 
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -462,7 +472,7 @@ public class GarageFragment extends Fragment {
             }
         });
 
-        ImageView stats = view.findViewById(R.id.stats);
+        stats = view.findViewById(R.id.stats);
         stats.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -476,11 +486,22 @@ public class GarageFragment extends Fragment {
         avatarExtraPictures.add((ImageView) view.findViewById(R.id.imageView_cloud2));
         avatarExtraPictures.add((ImageView) view.findViewById(R.id.imageView_cloud3));
         avatarExtraPictures.add((ImageView) view.findViewById(R.id.imageView_cloud4));
-        avatars.add((ImageView) view.findViewById(R.id.cat_my_gif1));
-        avatars.add((ImageView) view.findViewById(R.id.cat_my_gif2));
-        avatars.add((ImageView) view.findViewById(R.id.cat_my_gif3));
-        avatars.add((ImageView) view.findViewById(R.id.cat_my_gif4));
-        for(ImageView avatar : avatars) {
+
+        ImageView cat = view.findViewById(R.id.cat_my_gif1);
+        cat.setTag(1);
+        avatars.add(cat);
+        cat = view.findViewById(R.id.cat_my_gif2);
+        cat.setTag(2);
+        avatars.add(cat);
+        cat = view.findViewById(R.id.cat_my_gif3);
+        cat.setTag(3);
+        avatars.add(cat);
+        cat = view.findViewById(R.id.cat_my_gif4);
+        cat.setTag(4);
+        avatars.add(cat);
+
+         for(ImageView avatar : avatars) {
+
             avatar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -550,7 +571,11 @@ public class GarageFragment extends Fragment {
             });
         }
         chooseCharacter = view.findViewById(R.id.textView_choose_character);
-        ImageView change_avatar = view.findViewById(R.id.imageView_change_avatar);
+
+        padlock1 = view.findViewById(R.id.imageView_padlock3);
+        padlock2 = view.findViewById(R.id.imageView_padlock4);
+
+         ImageView change_avatar = view.findViewById(R.id.imageView_change_avatar);
         change_avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -566,6 +591,44 @@ public class GarageFragment extends Fragment {
     }
 
     public void changeVisibilityAvatars(final int visibility) {
+
+        startFight.post(new Runnable() {
+            @Override
+            public void run() {
+                startFight.setEnabled(visibility == View.INVISIBLE);
+            }
+        });
+        restart.post(new Runnable() {
+            @Override
+            public void run() {
+                restart.setEnabled(visibility == View.INVISIBLE);
+            }
+        });
+        settings.post(new Runnable() {
+            @Override
+            public void run() {
+                settings.setEnabled(visibility == View.INVISIBLE);
+            }
+        });
+        exit.post(new Runnable() {
+            @Override
+            public void run() {
+                exit.setEnabled(visibility == View.INVISIBLE);
+            }
+        });
+        modify.post(new Runnable() {
+            @Override
+            public void run() {
+                modify.setEnabled(visibility == View.INVISIBLE);
+            }
+        });
+        stats.post(new Runnable() {
+            @Override
+            public void run() {
+                stats.setEnabled(visibility == View.INVISIBLE);
+            }
+        });
+
         for (final ImageView extra : avatarExtraPictures) {
             extra.post(new Runnable() {
                 @Override
@@ -588,6 +651,57 @@ public class GarageFragment extends Fragment {
                 chooseCharacter.setVisibility(visibility);
             }
         });
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                User user = ((MainActivity) getActivity()).db.userDao().findByName(model.loggedIn);
+                if(user.gamesWon < 2) {
+                    padlock2.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            padlock2.setVisibility(visibility);
+                        }
+                    });
+                    if(visibility == View.VISIBLE)
+                        avatars.get(2).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                avatars.get(2).setEnabled(false);
+                            }
+                        });
+                    if(visibility == View.INVISIBLE)
+                        avatars.get(2).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                avatars.get(2).setEnabled(true);
+                            }
+                        });
+                    if(user.gamesWon == 0) {
+                        padlock1.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                padlock1.setVisibility(visibility);
+                            }
+                        });
+                        if(visibility == View.VISIBLE)
+                            avatars.get(3).post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    avatars.get(3).setEnabled(false);
+                                }
+                            });
+                        if(visibility == View.INVISIBLE)
+                            avatars.get(3).post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    avatars.get(3).setEnabled(true);
+                                }
+                            });
+                    }
+                }
+            }
+        }).start();
     }
 
     public int convertDate(String date) {
