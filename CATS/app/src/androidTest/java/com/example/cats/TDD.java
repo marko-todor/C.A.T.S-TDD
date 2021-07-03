@@ -563,6 +563,78 @@ public class TDD {
     }
 
 
+    @Test
+    public void check_password_no_password() {
+        onView(withId(R.id.nickname)).perform(typeText("TestPasswordNoPass"));
+        onView(withId(R.id.nickname)).perform(pressImeActionButton());
+        onView(withId(R.id.password)).perform(pressImeActionButton());
+        onView(withId(R.id.btn_dialog)).perform(click());
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withId(R.id.imageView_fight)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void check_password_no_upper_case() {
+        onView(withId(R.id.nickname)).perform(typeText("TestPasswordNoUpperPass"));
+        onView(withId(R.id.nickname)).perform(pressImeActionButton());
+        onView(withId(R.id.password)).perform(pressImeActionButton());
+        onView(withId(R.id.password)).perform(typeText("password123!"));
+        onView(withId(R.id.password)).perform(pressImeActionButton());
+        onView(withId(R.id.btn_dialog)).perform(click());
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withText("Password must have at least one upper case letter")).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void check_password_no_lower_case() {
+        onView(withId(R.id.nickname)).perform(typeText("TestPasswordNoLowerPass"));
+        onView(withId(R.id.nickname)).perform(pressImeActionButton());
+        onView(withId(R.id.password)).perform(pressImeActionButton());
+        onView(withId(R.id.password)).perform(typeText("PASSWORD123!"));
+        onView(withId(R.id.password)).perform(pressImeActionButton());
+        onView(withId(R.id.btn_dialog)).perform(click());
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withText("Password must have at least one lower case letter")).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void check_password_no_digit() {
+        onView(withId(R.id.nickname)).perform(typeText("TestPasswordNoDigitPass"));
+        onView(withId(R.id.nickname)).perform(pressImeActionButton());
+        onView(withId(R.id.password)).perform(pressImeActionButton());
+        onView(withId(R.id.password)).perform(typeText("Password!"));
+        onView(withId(R.id.password)).perform(pressImeActionButton());
+        onView(withId(R.id.btn_dialog)).perform(click());
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withText("Password must have at least one digit")).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void check_password_too_small() {
+        onView(withId(R.id.nickname)).perform(typeText("TestPasswordSmallPass"));
+        onView(withId(R.id.nickname)).perform(pressImeActionButton());
+        onView(withId(R.id.password)).perform(pressImeActionButton());
+        onView(withId(R.id.password)).perform(typeText("Pa1!"));
+        onView(withId(R.id.password)).perform(pressImeActionButton());
+        onView(withId(R.id.btn_dialog)).perform(click());
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withText("Password must be at least 8 characters long")).check(matches(isDisplayed()));
+    }
+
+
+    @Test
+    public void check_password_no_special_char() {
+        onView(withId(R.id.nickname)).perform(typeText("TestPasswordNoSpecialChar"));
+        onView(withId(R.id.nickname)).perform(pressImeActionButton());
+        onView(withId(R.id.password)).perform(pressImeActionButton());
+        onView(withId(R.id.password)).perform(typeText("Password123"));
+        onView(withId(R.id.password)).perform(pressImeActionButton());
+        onView(withId(R.id.btn_dialog)).perform(click());
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withText("Password must have at least one special character")).check(matches(isDisplayed()));
+    }
+
+
     @After
     public void tearDown() throws Exception {
 
