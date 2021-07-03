@@ -218,7 +218,7 @@ public class MyViewModel extends ViewModel {
     }
 
 
-    public void register(String username) {
+    public void register(String username, String password) {
         bodyPart = null;
         List<com.example.cats.database.CarPart> parts = new ArrayList<>();
 
@@ -259,6 +259,7 @@ public class MyViewModel extends ViewModel {
 
         User u = new User();
         u.username = username;
+        u.password = password;
         u.gamesLost = 0;
         u.gamesWon = 0;
         u.newBox = false;

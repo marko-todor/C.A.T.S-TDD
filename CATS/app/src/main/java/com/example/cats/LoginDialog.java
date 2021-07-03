@@ -13,12 +13,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class LoginDialog {
 
@@ -44,6 +47,17 @@ public class LoginDialog {
 
     }
 
+    public static String isValidPassword(final String password) {
+        if(password.length() < 8) return "Password must be at least 8 characters long";
+        boolean hasUpperCase = !password.equals(password.toLowerCase());
+        if (!hasUpperCase) return "Password must have at least one upper case letter";
+        boolean hasLowerCase = !password.equals(password.toUpperCase());
+        if (!hasLowerCase) return "Password must have at least one lower case letter";
+        if (!password.matches(".*\\d.*")) return "Password must have at least one digit";
+        if (!password.matches(".*[\\W]")) return "Password must have at least one special character";
+        return  "";
+    }
+
     public void showDialog(final Activity activity, final VideoFragment videoFragment){
         final Dialog dialog = new Dialog(activity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -57,13 +71,30 @@ public class LoginDialog {
             public void onClick(View v) {
                 final EditText nickname = dialog.findViewById(R.id.nickname);
 
+                final EditText password = dialog.findViewById(R.id.password);
+                String passwordStr = "";
+                if(password.getText() == null || password.getText().toString().equals("")) {
+                    passwordStr = "Password123!";
+                } else passwordStr = password.getText().toString();
+                final String validPasswordMessage = isValidPassword(passwordStr);
+                if (!passwordStr.equals("Password123!") && !validPasswordMessage.equals("")) {
+                    final TextView error = dialog.findViewById(R.id.textView_error_pass);
+                    error.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            error.setText(validPasswordMessage);
+                        }
+                    });
+                    return;
+                }
+
                 dialog.dismiss();
                 playSong(activity);
 
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        model.register(nickname.getText().toString());
+                        model.register(nickname.getText().toString(), password.getText().toString());
                         SharedPreferences sharedPref = activity.getPreferences(Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
                         editor.putBoolean("loggingIn", true);

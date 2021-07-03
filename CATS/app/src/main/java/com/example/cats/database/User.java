@@ -15,6 +15,9 @@ public class User {
     @ColumnInfo(name = "username")
     public String username;
 
+    @ColumnInfo(name = "password")
+    public String password;
+
     @ColumnInfo(name = "games_won")
     public Integer gamesWon;
 
